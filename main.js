@@ -1,11 +1,39 @@
 var net = require("net");
+var discord = require("discord.js");
 
+var online = false;
+var population = 0;
+
+// bot
+const token = "";
+const client = new discord.Client();
+
+client.on("ready", () => {
+	console.log("Logged in as " + client.user.tag);
+	refreshStatus();
+});
+
+client.on("message", msg => {
+	if(msg.content == "$status" || msg.content == "$up") {
+		if(online)
+			msg.channel.send("The server is currently **online** :white_check_mark: with **" + population + "** player" + (population != 1 ? "s" : ""));
+		else
+			msg.channel.send("The server is currently **offline** :no_entry:");
+	}
+});
+
+function refreshStatus() {
+	client.user.setActivity(population + (population == 1 ? " player" : " players"), { type: 'LISTENING' })
+	.catch(console.error);
+}
+
+client.login(token);
+
+// socket
 var ip = process.argv.length > 2 ? process.argv[2] : "127.0.0.1";
 if(!ip.includes(":")) ip += ":8003";
 
 var buffer = [];
-var online = false;
-var population = 0;
 
 var options = {
 	port: ip.split(':')[1],
@@ -25,7 +53,6 @@ function onErr() {
 }
 
 function onDat(data) {
-	console.log(data.toString());
 	var tokens = data.toString().split('\n');
 	tokens.forEach(e => {
 		if(e.length > 0) buffer.push(e);
@@ -57,7 +84,6 @@ function attemptReconnect() {
 }
 
 function processBuffer() {
-	console.log(buffer);
 	if(buffer.includes("begin")) {
 		buffer = buffer.slice(buffer.indexOf("begin") + 1, buffer.indexOf("end"));
 		population = 0;
@@ -75,6 +101,7 @@ function processBuffer() {
 					break;
 			}
 		}
+		refreshStatus();
 	} else {
 		console.log("Bad data (no begin)");
 	}
