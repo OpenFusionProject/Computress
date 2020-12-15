@@ -13,9 +13,9 @@ node main.js [ip[:port]]
 Computress currently offers the following functionality:
 - Show server population in activity message
 - Check server monitor status (`$status` / `$up`)
+- Dump in-game chat to a specific text channel
 
 Planned features that are currently WIP:
-- Dump in-game chat to a specific text channel
 - Dump name requests to a specific text channel
 - Approve or reject name requests through reactions
 

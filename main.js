@@ -7,6 +7,7 @@ var population = 0;
 // bot
 const token = "";
 const client = new discord.Client();
+const chan = "computress";
 
 client.on("ready", () => {
 	console.log("Logged in as " + client.user.tag);
@@ -23,8 +24,10 @@ client.on("message", msg => {
 });
 
 function refreshStatus() {
-	client.user.setActivity(population + (population == 1 ? " player" : " players"), { type: 'LISTENING' })
-	.catch(console.error);
+	if(!online)
+		client.user.setActivity("nothing", { type: 'LISTENING' }).catch(console.error);
+	else
+		client.user.setActivity(population + (population == 1 ? " player" : " players"), { type: 'LISTENING' }).catch(console.error);
 }
 
 client.login(token);
@@ -74,6 +77,7 @@ socket.on("end", onEnd);
 
 function attemptReconnect() {
 	console.log("Attempting to reconnect...");
+	refreshStatus();
 	socket = net.connect(options, () => {
 		console.log("Reconnected");
 		online = true;
@@ -95,7 +99,7 @@ function processBuffer() {
 					population++;
 					break;
 				case 'chat':
-					//console.log('msg:' + buffer[i].substring(buffer[i].indexOf(' ') + 1));
+					client.channels.cache.find(ch => ch.name == chan).send(buffer[i].substring(buffer[i].indexOf(' ') + 1));
 					break;
 				default:
 					break;
