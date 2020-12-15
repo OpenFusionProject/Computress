@@ -6,7 +6,7 @@ Computress operates by listening to the monitor port on your OF server.
 Ensure you have node and npm installed.
 ```
 npm install
-node main.js
+node main.js [ip[:port]]
 ```
 
 ## Features
