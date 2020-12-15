@@ -5,6 +5,7 @@ if(!ip.includes(":")) ip += ":8003";
 
 var buffer = [];
 var online = false;
+var population = 0;
 
 var options = {
 	port: ip.split(':')[1],
@@ -19,9 +20,8 @@ var socket = net.connect(options, () => {
 });
 
 function onErr() {
-	console.log("Lost connection to monitor");
 	online = false;
-	setTimeout(attemptReconnect, 5000);
+	setTimeout(attemptReconnect, 10000);
 }
 
 function onDat(data) {
@@ -31,16 +31,14 @@ function onDat(data) {
 		if(e.length > 0) buffer.push(e);
 	});
 	
-	if(buffer.includes("end")) {
-		console.log(buffer);
-		buffer = [];
-	}
+	if(buffer.includes("end"))
+		processBuffer();
 }
 
 function onEnd() {
 	console.log("Lost connection to monitor");
 	online = false;
-	setTimeout(attemptReconnect, 5000);
+	setTimeout(attemptReconnect, 10000);
 }
 
 socket.on("data", onDat);
@@ -56,4 +54,29 @@ function attemptReconnect() {
 	socket.on("error", onErr);
 	socket.on("data", onDat);
 	socket.on("end", onEnd);
+}
+
+function processBuffer() {
+	console.log(buffer);
+	if(buffer.includes("begin")) {
+		buffer = buffer.slice(buffer.indexOf("begin") + 1, buffer.indexOf("end"));
+		population = 0;
+		for(var i = 0; i < buffer.length; i++) {
+			var tokens = buffer[i].split(' ');
+			switch(tokens[0])
+			{
+				case 'player':
+					population++;
+					break;
+				case 'chat':
+					//console.log('msg:' + buffer[i].substring(buffer[i].indexOf(' ') + 1));
+					break;
+				default:
+					break;
+			}
+		}
+	} else {
+		console.log("Bad data (no begin)");
+	}
+	buffer = [];
 }
