@@ -18,5 +18,3 @@ Computress currently offers the following functionality:
 Planned features that are currently WIP:
 - Dump name requests to a specific text channel
 - Approve or reject name requests through reactions
-
-Use `$help` to get a list of available commands.
