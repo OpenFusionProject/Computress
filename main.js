@@ -10,7 +10,7 @@ const client = new discord.Client();
 const chan = "computress";
 
 client.on("ready", () => {
-	console.log("Logged in as " + client.user.tag);
+	console.log("[INFO] Logged in as " + client.user.tag);
 	refreshStatus();
 });
 
@@ -43,10 +43,10 @@ var options = {
 	host: ip.split(':')[0]
 };
 
-console.log("Connecting to monitor at " + ip + "...");
+console.log("[INFO] Connecting to monitor at " + ip + "...");
 
 var socket = net.connect(options, () => {
-	console.log("Connected");
+	console.log("[INFO] Connected");
 	online = true;
 });
 
@@ -66,7 +66,7 @@ function onDat(data) {
 }
 
 function onEnd() {
-	console.log("Lost connection to monitor");
+	console.log("[WARN] Lost connection to monitor");
 	online = false;
 	setTimeout(attemptReconnect, 10000);
 }
@@ -107,7 +107,7 @@ function processBuffer() {
 		}
 		refreshStatus();
 	} else {
-		console.log("Bad data (no begin)");
+		console.log("[WARN] Bad data (no begin)");
 	}
 	buffer = [];
 }
