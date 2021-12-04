@@ -89,8 +89,15 @@ function attemptReconnect() {
 	socket.on("end", onEnd);
 }
 
+function printBuffer(buf) {
+	console.log('{')
+	for(var i = 0; i < buf.length; i++)
+		console.log(buf[i]);
+	console.log('}');
+}
+
 function processBuffer() {
-	if(debug) console.log(buffer);
+	if(debug) printBuffer(buffer);
 	if(buffer.includes("begin")) {
 		var queue = buffer.slice(buffer.indexOf("begin") + 1, buffer.indexOf("end"));
 		population = 0;
@@ -104,7 +111,17 @@ function processBuffer() {
 				case 'chat':
 					if(!debug) client.channels.cache.find(ch => ch.name == chan).send(queue[i].substring(queue[i].indexOf(' ') + 1));
 					break;
+				case 'email':
+					if(!debug) client.channels.cache.find(ch => ch.name == chan).send(queue[i].substring(queue[i].indexOf(' ') + 1));
+					var body = '```\n';
+					for(var j = 1; queue[i + j][0] == '\t'; j++)
+						body += queue[i + j].substring(1) + '\n';
+					body += '```';
+					if(!debug) client.channels.cache.find(ch => ch.name == chan).send(body);
+					if(!queue[i + j].includes("endemail")) console.log("[WARN] Bad email (no endemail)");
+					i += j;
 				default:
+					console.log('[WARN] Unknown token: ' + tokens[0]);
 					break;
 			}
 		}
