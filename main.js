@@ -4,6 +4,8 @@ var discord = require("discord.js");
 var online = false;
 var population = 0;
 
+const debug = false;
+
 // bot
 const token = "";
 const client = new discord.Client();
@@ -30,7 +32,7 @@ function refreshStatus() {
 		client.user.setActivity(population + (population == 1 ? " player" : " players"), { type: 'LISTENING' }).catch(console.error);
 }
 
-client.login(token);
+if(!debug) client.login(token);
 
 // socket
 var ip = process.argv.length > 2 ? process.argv[2] : "127.0.0.1";
@@ -77,7 +79,7 @@ socket.on("end", onEnd);
 
 function attemptReconnect() {
 	console.log("Attempting to reconnect...");
-	refreshStatus();
+	if(!debug) refreshStatus();
 	socket = net.connect(options, () => {
 		console.log("Reconnected");
 		online = true;
@@ -88,6 +90,7 @@ function attemptReconnect() {
 }
 
 function processBuffer() {
+	if(debug) console.log(buffer);
 	if(buffer.includes("begin")) {
 		var queue = buffer.slice(buffer.indexOf("begin") + 1, buffer.indexOf("end"));
 		population = 0;
@@ -99,13 +102,13 @@ function processBuffer() {
 					population++;
 					break;
 				case 'chat':
-					client.channels.cache.find(ch => ch.name == chan).send(queue[i].substring(queue[i].indexOf(' ') + 1));
+					if(!debug) client.channels.cache.find(ch => ch.name == chan).send(queue[i].substring(queue[i].indexOf(' ') + 1));
 					break;
 				default:
 					break;
 			}
 		}
-		refreshStatus();
+		if(!debug) refreshStatus();
 	} else {
 		console.log("[WARN] Bad data (no begin); ignoring");
 	}
