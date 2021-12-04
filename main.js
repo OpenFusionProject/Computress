@@ -89,17 +89,17 @@ function attemptReconnect() {
 
 function processBuffer() {
 	if(buffer.includes("begin")) {
-		buffer = buffer.slice(buffer.indexOf("begin") + 1, buffer.indexOf("end"));
+		var queue = buffer.slice(buffer.indexOf("begin") + 1, buffer.indexOf("end"));
 		population = 0;
-		for(var i = 0; i < buffer.length; i++) {
-			var tokens = buffer[i].split(' ');
+		for(var i = 0; i < queue.length; i++) {
+			var tokens = queue[i].split(' ');
 			switch(tokens[0])
 			{
 				case 'player':
 					population++;
 					break;
 				case 'chat':
-					client.channels.cache.find(ch => ch.name == chan).send(buffer[i].substring(buffer[i].indexOf(' ') + 1));
+					client.channels.cache.find(ch => ch.name == chan).send(queue[i].substring(queue[i].indexOf(' ') + 1));
 					break;
 				default:
 					break;
@@ -107,7 +107,7 @@ function processBuffer() {
 		}
 		refreshStatus();
 	} else {
-		console.log("[WARN] Bad data (no begin)");
+		console.log("[WARN] Bad data (no begin); ignoring");
 	}
-	buffer = [];
+	buffer = buffer.slice(buffer.indexOf("end") + 1, buffer.length);
 }
