@@ -112,12 +112,12 @@ function processBuffer() {
 					if(!debug) client.channels.cache.find(ch => ch.name == chan).send(queue[i].substring(queue[i].indexOf(' ') + 1));
 					break;
 				case 'email':
-					if(!debug) client.channels.cache.find(ch => ch.name == chan).send(queue[i].substring(queue[i].indexOf(' ') + 1));
-					var body = '```\n';
+					var head = queue[i].substring(queue[i].indexOf(' ') + 1);
+					var body = '\n```\n';
 					for(var j = 1; queue[i + j][0] == '\t'; j++)
 						body += queue[i + j].substring(1) + '\n';
 					body += '```';
-					if(!debug) client.channels.cache.find(ch => ch.name == chan).send(body);
+					if(!debug) client.channels.cache.find(ch => ch.name == chan).send(head + body);
 					if(!queue[i + j].includes("endemail")) console.log("[WARN] Bad email (no endemail)");
 					i += j;
 				default:
