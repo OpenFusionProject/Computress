@@ -120,6 +120,7 @@ function processBuffer() {
 					if(!debug) client.channels.cache.find(ch => ch.name == chan).send(head + body);
 					if(!queue[i + j].includes("endemail")) console.log("[WARN] Bad email (no endemail)");
 					i += j;
+					break;
 				default:
 					console.log('[WARN] Unknown token: ' + tokens[0]);
 					break;
