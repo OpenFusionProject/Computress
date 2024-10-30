@@ -1,14 +1,15 @@
 {
   "name": "computress",
-  "version": "1.0.0",
-  "description": "Discord bot for OpenFusion",
+  "version": "2.0.0",
+  "description": "Discord bot for OpenFusion servers",
   "main": "main.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Gent Semaj",
   "license": "MIT",
   "dependencies": {
-    "discord.js": "^12.5.1"
+    "discord.js": "^14.16.3"
   }
 }
