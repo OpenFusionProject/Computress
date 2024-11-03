@@ -143,7 +143,8 @@ async function processBuffer(client, config) {
         case "email":
           const head = queue[i].substring(queue[i].indexOf(" ") + 1);
           let body = "\n```\n";
-          for (let j = 1; queue[i + j][0] == "\t"; j++)
+          let j = 1;
+          for (; queue[i + j][0] == "\t"; j++)
             body += queue[i + j].substring(1) + "\n";
           body += "```";
           await sendMessage(client, config, head + body);
