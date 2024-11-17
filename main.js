@@ -3,6 +3,7 @@ import { Client, ActivityType, GatewayIntentBits } from "discord.js";
 import { promises as fs } from "fs";
 
 const DEBUG = false;
+const MAX_SEND_ATTEMPTS = 5;
 
 var online = false;
 var population = 0;
@@ -118,8 +119,17 @@ function printBuffer(buf) {
 }
 
 async function sendMessage(client, config, message) {
-  const channel = await client.channels.fetch(config.channel_id);
-  await channel.send(message);
+  let attempt = 0;
+  while (attempt < MAX_SEND_ATTEMPTS) {
+    try {
+      const channel = await client.channels.fetch(config.channel);
+      await channel.send(message);
+      return;
+    } catch (err) {
+      console.error(`[ERROR] Could not send message: ${err}`);
+      attempt++;
+    }
+  }
 }
 
 async function processBuffer(client, config) {
