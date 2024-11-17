@@ -122,7 +122,7 @@ async function sendMessage(client, config, message) {
   let attempt = 0;
   while (attempt < MAX_SEND_ATTEMPTS) {
     try {
-      const channel = await client.channels.fetch(config.channel);
+      const channel = await client.channels.fetch(config.channel_id);
       await channel.send(message);
       return;
     } catch (err) {
