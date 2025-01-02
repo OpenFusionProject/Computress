@@ -2,6 +2,8 @@
 Computress is a Node-based Discord bot for OpenFusion servers.
 Computress operates by listening to the monitor port on your OF server.
 
+**Computress has been replaced by [computress-rs](https://github.com/OpenFusionProject/computress-rs)! This repository will no longer be maintained!**
+
 ## Usage
 Ensure you have node and npm installed. Fill in `config.json` with your Discord bot token, client ID, channel ID, and server address.
 
